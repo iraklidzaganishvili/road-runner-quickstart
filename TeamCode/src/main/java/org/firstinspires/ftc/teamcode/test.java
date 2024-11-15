@@ -37,37 +37,49 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
-@Autonomous(name = "BLUE_TEST_AUTO_PIXEL", group = "Autonomous")
+@Autonomous(name = "14864-CS-Auto", group = "Autonomous")
 public class test extends LinearOpMode {
     public class Lift {
-        private DcMotorEx lift;
+        private DcMotorEx liftRight;
+        private DcMotorEx liftLeft;
 
         public Lift(HardwareMap hardwareMap) {
-            lift = hardwareMap.get(DcMotorEx.class, "liftMotor");
-            lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            lift.setDirection(DcMotorSimple.Direction.FORWARD);
+            liftRight = hardwareMap.get(DcMotorEx.class, "liftMotor");
+            liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            liftRight.setDirection(DcMotorSimple.Direction.FORWARD);
+
+            liftLeft = hardwareMap.get(DcMotorEx.class, "liftMotor");
+            liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
+
+
         public class LiftUp implements Action {
+            // checks if the lift motor has been powered on
             private boolean initialized = false;
 
+            // actions are formatted via telemetry packets as below
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    lift.setPower(0.8);
+                    liftRight.setPower(0.8);
+                    liftLeft.setPower(0.8);
                     initialized = true;
                 }
 
-                double pos = lift.getCurrentPosition();
+                double pos = liftRight.getCurrentPosition();
                 packet.put("liftPos", pos);
                 if (pos < 3000.0) {
                     return true;
                 } else {
-                    lift.setPower(0);
+                    liftRight.setPower(0);
+                    liftLeft.setPower(0);
                     return false;
                 }
             }
         }
+
         public Action liftUp() {
             return new LiftUp();
         }
@@ -78,16 +90,19 @@ public class test extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    lift.setPower(-0.8);
+                    liftRight.setPower(-0.8);
+                    liftLeft.setPower(-0.8);
                     initialized = true;
                 }
 
-                double pos = lift.getCurrentPosition();
-                packet.put("liftPos", pos);
-                if (pos > 100.0) {
+                double posDown = liftRight.getCurrentPosition();
+                double pos = liftLeft.getCurrentPosition();
+                packet.put("liftPos", posDown);
+                if (posDown > 100.0) {
                     return true;
                 } else {
-                    lift.setPower(0);
+                    liftRight.setPower(0);
+                    liftLeft.setPower(0);
                     return false;
                 }
             }
