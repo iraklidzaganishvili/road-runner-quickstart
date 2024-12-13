@@ -26,7 +26,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 public class Move100InchesX extends LinearOpMode {
     @Override
     public void runOpMode() {
-        // Initialize the starting pose at the origin facing forward
+        // Initialize the        starting pose at the origin facing forward
         Pose2d initialPose = new Pose2d(0, 0, 0);
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
